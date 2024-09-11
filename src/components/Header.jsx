@@ -1,6 +1,16 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { UserContext } from "../context/userAuthentication";
+import { signOut } from "firebase/auth";
+import { auth } from "../utils/utils";
 
 function Header() {
+  const { user } = useContext(UserContext);
+
+  const handleSignOut = async () => {
+    await signOut(auth);
+  };
+
   return (
     <>
       <header className="text-gray-600 body-font">
@@ -24,15 +34,27 @@ function Header() {
             <Link to="/" className="mr-5 hover:text-gray-900">
               Homepage
             </Link>
-            <Link to="Login" className="mr-5 hover:text-gray-900">
-              Login
-            </Link>
-            <Link to="Signup" className="mr-5 hover:text-gray-900">
-              Signup
-            </Link>
             <Link to="products" className="mr-5 hover:text-gray-900">
               Products
             </Link>
+
+            {user.isLogin ? (
+              <>
+              <div>
+                <h1>{user.email}</h1>
+              </div>
+                <button className="bg-red-600 text-white p-2 rounded-lg hover:bg-red-700 transition duration-300 ease-in-out" onClick={handleSignOut}>Sign out</button>
+              </>
+            ) : (
+              <>
+                <Link to="Login" className="mr-5 hover:text-gray-900">
+                  Login
+                </Link>
+                <Link to="signup" className="mr-5 hover:text-gray-900">
+                  Sign up
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       </header>

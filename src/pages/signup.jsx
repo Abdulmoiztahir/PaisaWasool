@@ -1,93 +1,100 @@
-import { Link } from "react-router-dom";
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../utils/utils";
 
 function SignUp() {
-    return (
-        <>
-            <div id="signup_form" className="max-w-md mx-auto mt-10">
-                <h1 className="mb-5 mt-10 text-2xl text-center">Signup page</h1>
-                <div className="relative z-0 w-full mb-5 group">    
-                    <label
-                        htmlFor="floating_file"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    ></label>
-                </div>
-                <div className="relative z-0 w-full mb-5 group">
-                    <input
-                        type="email"
-                        name="floating_email"
-                        id="floating_email"
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=" "
-                        required=""
-                    />
-                    <label
-                        htmlFor="floating_email"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                        <i className="fa-solid fa-envelope" /> Email address
-                    </label>
-                </div>
-                <div className="relative z-0 w-full mb-5 group">
-                    <input
-                        type="password"
-                        name="floating_password"
-                        id="floating_password"
-                        className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                        placeholder=""
-                        required=""
-                    />
-                    <label
-                        htmlFor="floating_password"
-                        className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >
-                        <i className="fa-solid fa-lock" /> Password
-                    </label>
-                </div>
-                <div className="grid md:grid-cols-2 md:gap-6">
-                    <div className="relative z-0 w-full mb-5 group">
-                        <input
-                            type="text"
-                            name="floating_first_name"
-                            id="floating_first_name"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            required=""
-                        />
-                        <label
-                            htmlFor="floating_first_name"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            <i className="fa-solid fa-user" /> First name
-                        </label>
-                    </div>
-                    <div className="relative z-0 w-full mb-5 group">
-                        <input
-                            type="text"
-                            name="floating_last_name"
-                            id="floating_last_name"
-                            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            required=""
-                        />
-                        <label
-                            htmlFor="floating_last_name"
-                            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                            <i className="fa-solid fa-user" /> Last name
-                        </label>
-                    </div>
-                </div>
-                <button
-                    type="submit"
-                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    id="submit_btn"
-                >
-                    SIGN UP
-                </button>
-            </div>
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-        </>
-    )
+  function onSubmit(e) {
+    e.preventDefault();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed up
+        const user = userCredential.user;
+        // ...
+        navigate("/");
+        console.log("user create ho gya");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      });
+  }
+
+  function handleSubmitWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        navigate("/");
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        alert(errorMessage);
+      });
+  }
+
+  return (
+    <div
+      className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 animate-fade-in"
+    >
+      <h1
+        className="text-4xl font-bold text-center mb-6 text-blue-600 animate-bounce"
+      >
+        Sign Up
+      </h1>
+      <div
+        className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md animate-slide-up"
+      >
+        <form onSubmit={onSubmit} className="flex flex-col space-y-4">
+          <input
+            type="text"
+            placeholder="username"
+            required
+            className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out"
+          />
+          <input
+            value={email}
+            type="email"
+            placeholder="Email"
+            required
+            className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            value={password}
+            type="password"
+            placeholder="Password"
+            required
+            className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
+          >
+            Sign Up
+          </button>
+        </form>
+        <div className="flex items-center justify-center my-4">
+          <span className="text-gray-600">or</span>
+        </div>
+        <button
+          onClick={handleSubmitWithGoogle}
+          className="bg-red-600 text-white p-3 rounded-lg hover:bg-red-700   transition duration-300 ease-in-out w-full "
+        >
+          Sign Up with Google
+        </button>
+      </div>
+    </div>
+  );
 }
 
-export default SignUp
+export default SignUp;
